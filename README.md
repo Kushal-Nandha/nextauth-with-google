@@ -2,6 +2,15 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+Firstly after you have cloned the repository, create a .env file in the root directory and add the below. Replace all the below URL's with your own.
+```bash
+DATABASE_URL="postgresql://your_user:your_password@your_neon_host/your_database?sslmode=require"
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
+NEXTAUTH_SECRET="your-random-secret"
+NEXTAUTH_URL="http://localhost:3000"
+```
+
 First, run the development server:
 
 ```bash
