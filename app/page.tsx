@@ -1,6 +1,42 @@
+'use client';
+
+import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { Session } from "next-auth";
+import { useEffect } from "react";
+
+interface CustomSession extends Session {
+  user: {
+    id?: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string | null;
+    image?: string | null;
+  }
+}
 
 export default function Home() {
+  const { data: session, status } = useSession() as { 
+    data: CustomSession | null; 
+    status: "loading" | "authenticated" | "unauthenticated" 
+  };
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push('/auth/signin');
+    }
+  }, [status, router]);
+
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
+
+  if (!session) {
+    return null;
+  }
+
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
@@ -47,6 +83,24 @@ export default function Home() {
           >
             Read our docs
           </a>
+        </div>
+
+        <div className="text-center w-full">
+          <h2 className="mt-6 text-3xl font-bold tracking-tight">
+            Welcome, {session.user?.firstName}!
+          </h2>
+          <div className="mt-4 text-gray-600">
+            <p>Name: {session.user?.firstName} {session.user?.lastName}</p>
+            <p>Email: {session.user?.email}</p>
+          </div>
+          <div className="mt-8 flex justify-center">
+            <button
+              onClick={() => signOut({ callbackUrl: '/auth/signin' })}
+              className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors"
+            >
+              Sign Out
+            </button>
+          </div>
         </div>
       </main>
       <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
